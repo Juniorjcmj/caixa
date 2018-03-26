@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Caixa de Sugestões</ui:define>
+    <ui:define name="corpo">
+
+        <h:form id="fr" >
+            <p:growl id="messages" globalOnly="true" life="8000"/>                
+            <p:toolbar id="toolbar">
+                <f:facet name="left">
+                    <!-- botão para chamar o modal de inserção de nova sugestão -->
+<!--                    <p:commandLink 
+                                     title="Nova Sugestão" 
+                                     action="#{sugestaoBean.novaSituacao()}"
+                                     oncomplete="PF('cadastro-dialog').show();" 
+                                     process="@this" 
+                                     update="dialog-painel ">                 
+                        <p:resetInput target="fr:dialog-painel" />
+                       <h:graphicImage library="imagens" name="nova33.jpg"
+                                        style="width: 150px; height: 60px " />
+                    </p:commandLink> -->
+      
+                </f:facet>
+                <f:facet name="right">
+                    
+                    <p:commandLink 
+                        action="#{sugestaoBean.logar}"
+                        rendered="#{sugestaoBean.authenticated == false}"
+                        title="Logar Sistema"
+                        id="logarSistema" 
+                        >
+                        <h:graphicImage library="imagens" name="logar.png"
+                                        style="width: 150px " />
+                    </p:commandLink> 
+
+                    <span class="ui-separator"> <span
+                            class="ui-icon ui-icon-grip-dotted-vertical" />
+                    </span>
+                    <h:commandLink 
+                        action="#{sugestaoBean.admin}"
+                        rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}"
+                        title="Usuários"
+                        id="usuarios">
+                        <h:graphicImage library="imagens" name="loginManager.png"
+                                        style="width: 50px " />
+                    </h:commandLink>
+
+                    <span class="ui-separator"> <span
+
+                            class="ui-icon ui-icon-grip-dotted-vertical" />
+                    </span>
+
+                    <p:commandLink 
+                                   rendered="#{request.isUserInRole('ROLE_USUARIO_VIP')}"
+                                   onclick="document.location = '#{request.contextPath}/j_spring_security_logout'"
+                                   title="Sair" >
+                    <h:graphicImage library="imagens" name="logout16.png"
+                                        style="width: 20px " />
+                    </p:commandLink> 
+
+                    <span class="ui-separator"> <span 
+                            class="ui-icon ui-icon-grip-dotted-vertical" />
+                    </span>
+                        
+                </f:facet>
+            </p:toolbar>
+            <p:separator/>
+            <!-- Tabela traz todas as sugestões existentes no banco de dados ordenadas por data
+                 o usuario com função de administrador terá a possibilidade de CRUD
+                 usuario comum poderá somente cadastrar uma sugestão
+            -->                
+            <p:dataTable var="sugestao" 
+                         value="#{sugestaoBean.findAll}" 
+                         id="tabela-vtr"
+                         paginator="true"  
+                         paginatorPosition="bottom"
+                         rows="15" 
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15,50,100"
+                         >
+                
+                <p:column width="50" 
+                          style="text-align: center;" 
+                          rendered="#{request.isUserInRole('ROLE_USUARIO_VIP')}"
+                          headerText="Excluir">
+                    <p:commandLink action="#{sugestaoBean.excluir1()}"
+                                   update="tabela-vtr"
+                                   onclick="if (!confirm('Confirma a exclusão da Sugestão ?'))
+                                               return false;">
+                                <h:graphicImage library="imagens" name="excluir.png" width="25" height="20"
+                                        style="border:2" />
+                        <f:setPropertyActionListener target="#{sugestaoBean.sugestao}"
+                                                     value="#{sugestao}" />
+                    </p:commandLink>
+                </p:column>
+
+                
+                <h:inputHidden value="#{sugestao.id}" />
+
+                <p:column headerText="Data" width="110"
+                          style="text-align: center; color: crimson"
+                          filterBy="#{sugestao.dataSugestao}" filterMatchMode="contains">
+                    <h:outputText value="#{sugestao.dataSugestao}">
+                        <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                    </h:outputText>
+                </p:column> 
+                <p:column headerText="Assunto"  
+                          style="text-align: center;"  
+                          width="130"
+                          filterBy="#{sugestao.assunto}" 
+                          filterMatchMode="contains">
+                    <h:outputText value="#{sugestao.assunto}" />
+                </p:column>
+                <p:column headerText="Sugestão"  
+                          style="text-align: center;" 
+                          filterBy="#{sugestao.sugestao}" 
+                          filterMatchMode="contains">
+                    <h:outputText value="#{sugestao.sugestao}" />
+                </p:column> 
+                <p:column headerText="Situação"  
+                          style="text-align: center;"  
+                          width="110"
+                          filterBy="#{sugestao.situacao}" 
+                          filterMatchMode="contains">
+                    <h:outputText value="#{sugestao.situacao}"/>
+
+                </p:column>
+                <p:column headerText="Observação"  
+                          style="text-align: center;"
+                          filterBy="#{sugestao.observacao}" 
+                          filterMatchMode="contains">
+                    <h:outputText value="#{sugestao.observacao}" />
+                </p:column> 
+                <p:column  width="50">
+                    <p:commandLink 
+                        id="teste"
+                        title="Responder"
+                        rendered="#{request.isUserInRole('ROLE_USUARIO_VIP')}"
+                        process="@this"
+                        update="@(.myStyle)"                     
+                        
+                        oncomplete="PF('atualizar-dialog').show()" >            
+                        
+                       <f:setPropertyActionListener target="#{sugestaoBean.sugestao}"
+                                                     value="#{sugestao}" /> 
+                        
+                        <f:setPropertyActionListener target="#{sugestaoBean.destinoSalvar}"
+                                                     value="#{sugestao}" />
+
+                         <p:resetInput target="fr:dialog-painel-atualizar" /> 
+                        <h:graphicImage library="imagens" name="editar.png"
+                                        style="width: 50px " />
+                        
+                    </p:commandLink>
+                    
+                </p:column>
+
+            </p:dataTable>
+
+
+            <!-- Dialogo para cadastro de sugestão  -->
+<!--            <p:dialog header="Nova Sugestão" 
+                      widgetVar="cadastro-dialog"  
+                      resizable="false" 
+                      closeOnEscape="true"
+                      id="dialog-painel"
+                      closable="true"
+                      
+                      >                
+                <p:graphicImage library="imagens" name="baner2.gif"
+                                         />
+                <p:panelGrid columns="2" id="painel">         
+                    
+
+                    <p:outputLabel value="Assunto: " for="ass" />
+                    
+                    <p:selectOneMenu value="#{sugestaoBean.sugestao.assunto}" 
+                                     id="ass" 
+                                     editable="true"  
+                                     style="width: 300px"
+                                     label="Digite ou escolha um Assunto"    
+                                     
+                                     >
+                        <f:selectItem itemLabel="Selecione ou Digite o assunto" itemValue="" />
+                        <f:selectItems value="#{sugestaoBean.assuntos}" 
+                                       var="player"
+                                       itemValue="#{player}"/>
+                        
+                        
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel value="Sugestão :"  />
+                    <p:inputTextarea value="#{sugestaoBean.sugestao.sugestao}" style="width: 400px"
+                                     />  
+                    <h:outputText/>
+                    <p:messages/>
+                </p:panelGrid> 
+                
+                <p:commandLink   action="#{sugestaoBean.save()}" 
+                                   process="dialog-painel"
+                                   update="messages painel tabela-vtr fr" 
+                                   oncomplete="if (!args.validationFailed) PF('cadastro-dialog').hide()"
+                                   >
+                    
+                    <h:graphicImage library="imagens" name="enviar.jpg"
+                                        style="width: 35px " />
+                </p:commandLink>
+
+                 Este modal é para o administrador colocar as observações 
+            </p:dialog>
+             -->
+            <p:dialog header="Responder" 
+                      widgetVar="atualizar-dialog"  
+                      resizable="false" 
+                      closeOnEscape="true"
+                      
+                      id="dialog-painel-atualizar" 
+                      
+                       >   
+                
+                <p:graphicImage library="imagens" name="baner2.gif"
+                                         />
+
+                <p:panelGrid columns="2" id="painel" >
+
+                    <p:outputLabel value="Observação:"/>
+                    <p:inputTextarea value="#{sugestaoBean.sugestao.observacao}" style="width: 400px"/>
+                    
+                    <p:outputLabel value="Situação" />
+                    <p:selectOneMenu value="#{sugestaoBean.sugestao.situacao}" id="sit" 
+                                     >
+                        <f:selectItem itemValue="Atendido" itemLabel="Atendido" />
+                        <f:selectItem itemValue="Não atendido" itemLabel="Não atendido" />
+                        <f:selectItem itemValue="Aguardando" itemLabel="Aguardando" />
+                        
+                        
+                    </p:selectOneMenu>
+
+                </p:panelGrid>                           
+                <p:commandButton   action="#{sugestaoBean.save()}"   
+                                   value="Enviar"
+                                   icon="ui-icon-circle-check"
+                                   process="dialog-painel-atualizar"
+                                   update="messages painel tabela-vtr @(.myStyle)" 
+                                   oncomplete="if (!args.validationFailed) PF('atualizar-dialog').hide()"/>
+
+            </p:dialog>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

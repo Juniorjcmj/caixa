@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Sugestões</ui:define>
+    <ui:define name="corpo">
+        
+        <script>
+            function somenteNumeros(num){
+                var er = /[^0-9]/;
+                er.lastIndex = 0;
+                var campo = num;
+                if(er.test(campo.value)){
+                    campo.value = "";
+                }
+            }
+        </script>
+        
+
+        <h:form id="fr" styleClass="form">
+            <div style="font-size: 20px">  <p:growl id="messages" globalOnly="true" life="100000" />  </div>
+            
+                <!-- nova forma de visualização   -->
+                
+                <p:panel style="margin: auto; width: 30%; padding: 10px" >
+                    <p:commandLink     style="background-color: white"
+                                   title="Nova Sugestão" 
+                                   action="#{sugestaoBean.novaSituacao()}"
+                                   oncomplete="PF('cadastro-dialog').show();" 
+                                   process="@this" 
+                                   update="dialog-painel ">                 
+                    <p:resetInput target="fr:dialog-painel" />
+                    <h:graphicImage library="imagens" name="nova33.jpg"
+                                    style="width: 500px; height: 250px " />
+                </p:commandLink> 
+              
+                </p:panel>
+           
+            <!-- Dialogo para cadastro de sugestão -->
+            <p:dialog header="Nova Sugestão" 
+                      widgetVar="cadastro-dialog"  
+                      resizable="false" 
+                      closeOnEscape="true"
+                      id="dialog-painel"
+                      closable="true"
+
+                      >                
+                <p:graphicImage library="imagens" name="baner2.gif"
+                                />
+                <p:panelGrid columns="2" id="painel">         
+
+
+                    <p:outputLabel value="Assunto: " for="ass" />
+
+                    <p:selectOneMenu value="#{sugestaoBean.sugestao.assunto}" 
+                                     id="ass" 
+                                     editable="true"  
+                                     style="width: 300px"
+                                     label="Digite ou escolha um Assunto"    
+
+                                     >
+                        <f:selectItem itemLabel="Selecione ou Digite o assunto" itemValue="" />
+                        <f:selectItems value="#{sugestaoBean.assuntos}" 
+                                       var="player"
+                                       itemValue="#{player}"/>
+
+
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Sugestão :"  />
+                    <p:inputTextarea value="#{sugestaoBean.sugestao.sugestao}" style="width: 400px"
+                                     />  
+                    <h:outputText/>
+                    <p:messages/>
+                </p:panelGrid> 
+
+                <p:commandLink   action="#{sugestaoBean.save()}" 
+                                 process="dialog-painel"
+                                 update="messages dialog-painel" 
+                                 oncomplete="if (!args.validationFailed) PF('cadastro-dialog').hide()"
+                                 >
+
+                    <h:graphicImage library="imagens" name="enviar.jpg"
+                                    style="width: 35px " />
+                </p:commandLink>
+
+
+            </p:dialog>
+
+            <p:dialog header="Visualizar Sugestão" 
+                      widgetVar="visualizar-dialog"  
+                      resizable="false" 
+                      closeOnEscape="true"
+                      id="visualizar"
+                      closable="true"
+                      
+                      >  
+                <p:panelGrid columns="4">
+                    <p:outputLabel value="Digite o protocolo"/>
+                    <p:inputText title="Digite seu Protocolo" value="#{sugestaoBean.tickt}" onkeyup="somenteNumeros(this)"/>
+                    <p:commandButton value="Buscar" action="#{sugestaoBean.getBuscarPorTickt}" update="tabela-visualizacao message"/>
+                   <p:messages id="message"  closable="true"/>
+                        
+                  
+                </p:panelGrid>
+
+                <p:dataTable 
+                    var="sugestao" 
+                    value="#{sugestaoBean.findAllpoTickt}" 
+                    id="tabela-visualizacao"                         
+                                        
+                    >
+                    <p:column headerText="Data" width="110"
+                              style="text-align: center; color: crimson"
+                              >
+                        <h:outputText value="#{sugestao.dataSugestao}">
+                            <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                        </h:outputText>
+                    </p:column> 
+                    <p:column headerText="Assunto"  
+                              style="text-align: center;"  
+                              width="130"
+                              >
+                        <h:outputText value="#{sugestao.assunto}" />
+                    </p:column>
+                    <p:column headerText="Sugestão"  
+                              style="text-align: center;" 
+                              >
+                        <h:outputText value="#{sugestao.sugestao}" />
+                    </p:column> 
+                    <p:column headerText="Situação"  
+                              style="text-align: center;"  
+                              width="110"
+                              >
+                        <h:outputText value="#{sugestao.situacao}"/>
+
+                    </p:column>
+                    <p:column headerText="Resposta"  
+                              style="text-align: center;"
+                              >
+                        <h:outputText value="#{sugestao.observacao}" />
+                    </p:column> 
+                </p:dataTable>
+                <p:button outcome="/home.xhtml" value="Fechar" /> 
+            </p:dialog>
+
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

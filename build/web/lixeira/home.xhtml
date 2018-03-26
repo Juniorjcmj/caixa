@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Sugestões</ui:define>
+    <ui:define name="corpo">
+
+        <h:form id="fr">
+            <p:growl id="messages" globalOnly="true" life="8000"/>                
+            <p:toolbar id="toolbar" 
+                       style="background-color: white; 
+                       color: white; 
+                       background-position: top" >
+                
+                <f:facet name="left" >
+                    <!-- botão para chamar o modal de inserção de nova sugestão -->
+                    <p:commandLink 
+                                     title="Nova Sugestão" 
+                                     action="#{sugestaoBean.novaSituacao()}"
+                                     oncomplete="PF('cadastro-dialog').show();" 
+                                     process="@this" 
+                                     update="dialog-painel ">                 
+                        <p:resetInput target="fr:dialog-painel" />
+                       <h:graphicImage library="imagens" name="nova33.jpg"
+                                        style="width: 500px; height: 250px " />
+                    </p:commandLink> 
+                </f:facet>
+                <f:facet name="right" >
+                   
+                    <p:commandLink 
+                        action="#{sugestaoBean.logar}"
+                        
+                        title="Logar Sistema"
+                        id="logarSistema" 
+                        >
+                        <h:graphicImage library="imagens" name="logar.png"
+                                        style="width: 150px " />
+                    </p:commandLink> 
+                        
+                </f:facet>
+                    
+            </p:toolbar>
+            <p:separator/>  
+            
+            
+                       <!-- Dialogo para cadastro de sugestão -->
+            <p:dialog header="Nova Sugestão" 
+                      widgetVar="cadastro-dialog"  
+                      resizable="false" 
+                      closeOnEscape="true"
+                      id="dialog-painel"
+                      closable="true"
+                      
+                      >                
+                <p:graphicImage library="imagens" name="baner2.gif"
+                                         />
+                <p:panelGrid columns="2" id="painel">         
+                    
+
+                    <p:outputLabel value="Assunto: " for="ass" />
+                    
+                    <p:selectOneMenu value="#{sugestaoBean.sugestao.assunto}" 
+                                     id="ass" 
+                                     editable="true"  
+                                     style="width: 300px"
+                                     label="Digite ou escolha um Assunto"    
+                                     
+                                     >
+                        <f:selectItem itemLabel="Selecione ou Digite o assunto" itemValue="" />
+                        <f:selectItems value="#{sugestaoBean.assuntos}" 
+                                       var="player"
+                                       itemValue="#{player}"/>
+                        
+                        
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel value="Sugestão :"  />
+                    <p:inputTextarea value="#{sugestaoBean.sugestao.sugestao}" style="width: 400px"
+                                     />  
+                    <h:outputText/>
+                    <p:messages/>
+                </p:panelGrid> 
+                
+                <p:commandLink   action="#{sugestaoBean.save()}" 
+                                   process="dialog-painel"
+                                   update="messages painel" 
+                                   oncomplete="if (!args.validationFailed) PF('cadastro-dialog').hide()"
+                                   >
+                    
+                    <h:graphicImage library="imagens" name="enviar.jpg"
+                                        style="width: 35px " />
+                </p:commandLink>
+
+                <!-- Este modal é para o administrador colocar as observações -->
+            </p:dialog>
+            
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

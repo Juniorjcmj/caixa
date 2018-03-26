@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Usuários do Sistema</ui:define>
+    <ui:define name="corpo">
+        <h1 style="color: blue">Cadastro de Usuários</h1>
+        <h:form id="cadastro">
+            <p:messages />
+
+
+            <p:panelGrid columns="2">
+                <p:outputLabel value="Nome:" for="nome" />
+                <p:inputText id="nome" label="Nome"
+                             value="#{usuarioBean.usuario.nome}" size="30" maxlength="30"
+                             required="true" requiredMessage="Você não tem nome?">
+                    <f:validateLength minimum="10" maximum="30" />
+                </p:inputText>
+
+                <h:inputHidden value="#{usuarioBean.usuario.id}" />
+                <h:outputLabel />
+
+                <h:outputLabel value="Celular:" for="celular" />
+                <p:inputText id="celular" label="Celular"
+                             value="#{usuarioBean.usuario.celular}" size="10" />
+
+                <p:outputLabel value="e-Mail:" for="email" />
+                <h:panelGroup>
+                    <p:inputText id="email" label="e-Mail"
+                                 value="#{usuarioBean.usuario.email}" size="50" maxlength="50"
+                                 required="true" validatorMessage="e-mail inválido">
+                        <f:validateRegex pattern="[a-zA-Z0-9\-\_\.]+@[a-zA-Z0-9\-\_\.]+" />
+                    </p:inputText>
+                    <p:message for="email" />
+                </h:panelGroup>
+
+               
+
+                <p:outputLabel value="Login:" for="login" />
+                <p:inputText id="login" label="Login"
+                             value="#{usuarioBean.usuario.login}" size="15" maxlength="15"
+                             required="true"
+                             validatorMessage="Login deve ter no mínimo 5 e no máximo 15 caracteres e só pode ter os símbolos '.' e '_'.">
+                    <f:validateRegex pattern="([a-z]|[0-9]|[.]|[_]){5,15}" />
+                </p:inputText>
+                
+                <p:outputLabel value="OM: " for="om" />
+                <p:selectOneMenu value="#{usuarioBean.usuario.om}" id="om">
+                            <f:selectItem itemValue="DivAnf" itemLabel="DivAnf" />
+                            <f:selectItem itemValue="CDD" itemLabel="CDD" />
+                            <f:selectItem itemValue="CIASC" itemLabel="CIASC" />
+                            <f:selectItem itemValue="BFNIG" itemLabel="BFNIG" />
+                            <f:selectItem itemValue="CMM" itemLabel="CMM" />
+                            <f:selectItem itemValue="1ºBTL" itemLabel="1ºBTL" />
+                            <f:selectItem itemValue="2ºBTL" itemLabel="2ºBTL" />
+                            <f:selectItem itemValue="3ºBTL" itemLabel="3ºBTL" />
+                            <f:selectItem itemValue="BTLART" itemLabel="BTLART" />
+                            <f:selectItem itemValue="BATDAA" itemLabel="BATDAA" />
+                            <f:selectItem itemValue="BTLCMC" itemLabel="BTLCMC" />
+                            <f:selectItem itemValue="BATBLI" itemLabel="BATBLI" />
+                        </p:selectOneMenu>
+
+                <p:outputLabel value="Senha:" for="senha" />
+                <p:password id="senha" label="Senha"
+                            value="#{usuarioBean.usuario.senha}" size="10" maxlength="10"
+                            required="true" redisplay="true" />
+
+                <p:outputLabel value="Confirmar Senha:" for="confirmarsenha" />
+                <p:password id="confirmarsenha" label="Confirmar Senha"
+                            value="#{usuarioBean.confirmarSenha}" size="10" maxlength="10"
+                            required="true" redisplay="true" />
+            </p:panelGrid>
+
+            <h:commandButton action="#{usuarioBean.salvar}" value="Salvar" />
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Cadastro de  Usuários</ui:define>
+    <ui:define name="corpo">
+
+
+        <h:form id="cad">
+            <p:messages />
+            <p:toolbar>
+                <f:facet name="left">
+                   <span class="ui-separator"> <span
+                            class="ui-icon ui-icon-grip-dotted-vertical" />
+                    </span>
+                    <p:commandLink  
+                                   action="#{usuarioBean.novo}"
+                                     title="Novo Usuário"
+                                     
+                                     >
+                    <h:graphicImage library="imagens" name="novouser.jpg"
+                                        style="width: 30px " />
+                    </p:commandLink>
+                    
+                        
+
+
+                </f:facet>
+                <f:facet name="right">
+                    <h:commandLink 
+                        action="#{sugestaoBean.home}"                                       
+                                   title="Home"
+                                   id="home">
+                            <h:graphicImage library="imagens" name="11989_128x128.png"
+                                        style="width: 30px " />
+                         </h:commandLink>
+                    
+                    <span class="ui-separator"> <span 
+                            class="ui-icon ui-icon-grip-dotted-vertical" />
+                    </span>
+                    <p:commandLink 
+                                       rendered="#{request.isUserInRole('ROLE_USUARIO_VIP')}"
+                                       onclick="document.location = '#{request.contextPath}/j_spring_security_logout'"
+                                       title="Sair" >
+                    <h:graphicImage library="imagens" name="logout16.png"
+                                        style="width: 15px " />
+                    
+                    </p:commandLink> 
+
+                    
+                </f:facet>
+
+            </p:toolbar>
+
+            <p:dataTable var="usuario" value="#{usuarioBean.lista}"
+                         id="tabela-usuario" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
+
+                <f:facet name="header"> Usuários</f:facet>
+                <f:facet name="footer">Final da listagem</f:facet>
+
+                <p:column width="8" style="text-align: center;">
+                    <p:commandLink action="#{usuarioBean.ativar}"
+                                   update="tabela-usuario">
+                        <h:graphicImage library="imagens"
+                                        name="usuario_ativo_#{usuario.ativo}.png" style="border:0" />
+                        <f:setPropertyActionListener target="#{usuarioBean.usuario}"
+                                                     value="#{usuario}" />
+                    </p:commandLink>
+                </p:column>
+
+                <p:column headerText="ID" width="8" style="text-align: center;">
+                    <h:outputText value="#{usuario.id}" />
+                </p:column>
+
+
+
+                <p:column headerText="Nome" width="100" style="text-align: center">
+                    <h:outputText value="#{usuario.nome}" />
+                </p:column>
+                <p:column headerText="OM" width="50" style="text-align: center">
+                    <h:outputText value="#{usuario.om}" />
+                </p:column>
+                <p:column headerText="Login" width="50" style="text-align: center">
+                    <h:outputText value="#{usuario.login}" />
+                </p:column>
+                
+
+                <p:column headerText="Email" width="80" style="text-align: center">
+                    <a href="mailto:#{usuario.email}">#{usuario.email}</a>
+                </p:column>
+
+                <p:column width="10" style="text-align: center;">
+                    <p:commandLink action="#{usuarioBean.editar}">
+                        <h:graphicImage library="imagens" name="editar16.png"
+                                        style="border:2" />
+                        <f:setPropertyActionListener target="#{usuarioBean.usuario}"
+                                                     value="#{usuario}" />
+                        <f:setPropertyActionListener target="#{usuarioBean.destinoSalvar}"
+                                                     value="/admin/principal" />
+                    </p:commandLink>
+                </p:column>
+                <p:column width="10" style="text-align: center;">
+                    <p:commandLink action="#{usuarioBean.excluir}"
+                                   update="tabela-usuario"
+                                   onclick="if (!confirm('Confirma a exclusão do usuário #{usuario.nome}?'))
+                                               return false;">
+                        <h:graphicImage library="imagens" name="excluir16.png"
+                                        style="border:2" />
+                        <f:setPropertyActionListener target="#{usuarioBean.usuario}"
+                                                     value="#{usuario}" />
+                    </p:commandLink>
+                </p:column>
+                <p:column headerText="Permissões" width="50"
+                          style="text-align: center;">
+                    <h:commandLink
+                        action="#{usuarioBean.atribuiPermissao(usuario, 'ROLE_ADMINISTRADOR')}"
+                        title="Permissão Administrador">
+                        <h:graphicImage library="imagens"
+                                        name="ROLE_ADMINISTRADOR_#{usuario.permissao.contains('ROLE_ADMINISTRADOR')}.png"
+                                        style="border:0" />
+                    </h:commandLink>
+                    <h:commandLink
+                        action="#{usuarioBean.atribuiPermissao(usuario, 'ROLE_USUARIO_VIP')}"
+                        title="Permissão Usuário VIP">
+                        <h:graphicImage library="imagens"
+                                        name="ROLE_USUARIO_VIP_#{usuario.permissao.contains('ROLE_USUARIO_VIP')}.png"
+                                        style="border:0" />
+                    </h:commandLink>
+                    <h:commandLink
+                        action="#{usuarioBean.atribuiPermissao(usuario, 'ROLE_USUARIO')}"
+                        title="Permissão Usuário">
+                        <h:graphicImage library="imagens"
+                                        name="ROLE_USUARIO_#{usuario.permissao.contains('ROLE_USUARIO')}.png"
+                                        style="border:0" />
+                    </h:commandLink>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

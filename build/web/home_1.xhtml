@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Sugestões</ui:define>
+    <ui:define name="corpo">
+
+        <h:form id="fr">
+            <p:growl id="messages" globalOnly="true" life="8000"/>  
+            
+            <p:panelGrid columns="4" layout="grid"  >
+            <!-- nova forma de visualização   -->
+                   
+             
+                                         
+            <p:panelGrid columns="2" id="painel" >         
+                    <f:facet name="header">
+                <p:graphicImage library="imagens" name="baner2.gif"/>
+            </f:facet>
+                    
+                    <p:outputLabel value="Assunto: " for="ass" />
+                       
+                    
+                    <p:selectOneMenu value="#{sugestaoBean.sugestao.assunto}" 
+                                     id="ass" 
+                                     editable="true"  
+                                     style="width: 300px"
+                                     label="Digite ou escolha um Assunto"    
+                                     
+                                     >
+                        <f:selectItem itemLabel="Selecione ou Digite o assunto" itemValue="" />
+                        <f:selectItems value="#{sugestaoBean.assuntos}" 
+                                       var="player"
+                                       itemValue="#{player}"/>
+                        
+                        
+                    </p:selectOneMenu>
+                           
+                    
+                    <p:outputLabel value="Sugestão:"  />
+                    <p:inputTextarea value="#{sugestaoBean.sugestao.sugestao}" style="width: 400px"
+                                     />
+                       
+                 
+                    <p:messages/>
+                     <h:outputText/>
+                
+                    </p:panelGrid> 
+            
+            <h:outputText/><h:outputText/><h:outputText/>
+            <p:commandLink  
+                action="#{sugestaoBean.save()}" 
+                update="messages " 
+                title="Enviar"
+                                   >
+                     <h:graphicImage library="imagens" name="enviar.jpg"
+                                        style="width: 80px " />
+            </p:commandLink>
+                     
+            
+             
+            <p:commandLink
+                             
+                        action="#{sugestaoBean.logar}"
+                        title="Logar Sistema"
+                        id="logarSistema" 
+                        >
+                        <h:graphicImage library="imagens" name="logar.png" 
+                                        style="width: 130px" />
+            </p:commandLink>
+                                          
+                          
+              <h:outputText/>
+                 </p:panelGrid>
+                       <!-- Dialogo para cadastro de sugestão -->
+                      
+               
+                
+            
+            
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

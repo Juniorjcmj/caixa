@@ -1,0 +1,54 @@
+#divcenter{
+    border: #045491;
+    border-image: 5;
+    opacity: 10;
+    width: 400px;
+    height: 150px;
+    left: 50%;
+    margin: -130px 0 0 -210px;
+    padding: 10px;
+    position: absolute;
+    top: 50%;
+    color: white
+}
+#body{
+    
+    background-image: url("#{resource['imagens/fuzileiros-navais.jpg']}");
+    background-position:top;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-clip: content-box;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    opacity: 1;
+    background-color: #778899;
+}
+body, html{
+    width: 99%;
+    height:100%;
+    align-content: center;
+    font-family: Arial, Tahoma, sans-serif;
+}
+#fundo-externo{
+    overflow: hidden;
+    width: 100%;
+    height:100%;
+    position: relative;
+}
+#fundo{
+    position:fixed;
+    width: 100%;
+    height:100%;
+}
+#fundo img{
+    position:fixed;
+    width: 100%;
+   
+}
+#fundoPainel{
+     background-image: url("#{resource['imagens/indice.jpg']}");
+     background-position: center;
+     opacity: 10px;
+}
+
